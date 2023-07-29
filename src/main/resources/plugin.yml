@@ -1,0 +1,10 @@
+name: KwampaClan
+version: '${project.version}'
+main: jcn.kwampaclan.KwampaClan
+api-version: '1.20'
+softdepend:
+  - PlaceholderApi
+  - LuckPerms
+commands:
+  clan:
+    description: Основная команда плагина;

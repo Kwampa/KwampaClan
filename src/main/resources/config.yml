@@ -1,0 +1,8 @@
+# Конфигурационный файл для подключения к MySQL
+mysql:
+  host: your-mysql-host
+  port: your-mysql-port
+  database: your-mysql-database
+  username: your-mysql-username
+  password: your-mysql-password
+# Созданный спецально для проекта Квампа
