@@ -129,6 +129,9 @@ public class GuiCommand implements Listener {
         String itemName = itemMeta.getDisplayName();
 
         switch (itemName) {
+            case "§eИнформация":
+                player.sendMessage("Информация, хули тыкаешь?");
+                break;
             case "§aУчастники":
                 openMembersInventory(player);
                 break;
@@ -244,7 +247,7 @@ public class GuiCommand implements Listener {
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
                 }
                 else {
-                    player.sendMessage("Префикс должен состоять из 2х симводов");
+                    player.sendMessage("Префикс должен состоять из 2х символов");
                 }
             } else {
                 return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Попробуйте еще раз"));
@@ -265,7 +268,7 @@ public class GuiCommand implements Listener {
     }
 
     public void updateClanNameByCreator(String creatorName, String newName) {
-        try {PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanprefix = ? WHERE clancreator = ?");
+        try {PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanname = ? WHERE clancreator = ?");
             statement.setString(1, newName);
             statement.setString(2, creatorName);
             statement.executeUpdate();
@@ -295,7 +298,6 @@ public class GuiCommand implements Listener {
                 count++;
             }
         }
-
         return count;
     }
 }
