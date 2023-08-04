@@ -181,6 +181,7 @@ public class GuiCommand implements Listener {
         for (String memberName : membersList) {
             ItemStack skull = new ItemStack(PLAYER_HEAD);
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+            skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(memberName));
             skullMeta.setDisplayName(memberName);
             skull.setItemMeta(skullMeta);
             membersInventory.addItem(skull);
