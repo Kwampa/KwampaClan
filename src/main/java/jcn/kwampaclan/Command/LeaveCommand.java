@@ -47,7 +47,7 @@ public class LeaveCommand {
         String playerName = player.getName();
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = REPLACE(members, ?, '') WHERE members LIKE ?");
-            statement.setString(1, playerName);
+            statement.setString(1,  "," + playerName);
             statement.setString(2, "%" + playerName + "%");
             statement.executeUpdate();
             statement.close();

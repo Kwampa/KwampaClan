@@ -83,11 +83,11 @@ public class KickCommand {
         return null;
     }
 
-    private void removePlayerFromClan(Player player) {//todo Надо исправить выход из клана так как он крашит вкладку участников. Остаются запятые.
+    private void removePlayerFromClan(Player player) {
         String playerName = player.getName();
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = REPLACE(members, ?, '') WHERE members LIKE ?");
-            statement.setString(1, playerName);
+            statement.setString(1, "," + playerName);
             statement.setString(2, "%" + playerName + "%");
             statement.executeUpdate();
             statement.close();
