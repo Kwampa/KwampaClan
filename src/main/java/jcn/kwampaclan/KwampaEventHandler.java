@@ -12,10 +12,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.util.Arrays;
@@ -27,11 +30,19 @@ public class KwampaEventHandler implements Listener {
         this.connection = connection;
     }
 
+    NamespacedKey namespacedKey = new NamespacedKey((Plugin) Bukkit.getServer().getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack clickedItem = event.getCurrentItem();
-        Inventory clickedInventory = event.getClickedInventory();
+
+        Inventory inventory = event.getClickedInventory();
+        PersistentDataHolder holder = (PersistentDataHolder) inventory.getHolder();
+        PersistentDataContainer container = holder.getPersistentDataContainer();
+        if(container.get(namespacedKey, PersistentDataType.STRING).equals("KwampaClan")){
+            event.setCancelled(true);
+        }
+
         GuiCommand guiCommand = new GuiCommand(connection);
         guiCommand.handleClanSettingsClick(player, clickedItem);
     }

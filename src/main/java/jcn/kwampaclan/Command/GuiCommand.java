@@ -14,10 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,13 +37,19 @@ public class GuiCommand implements Listener {
         this.connection = connection;
         this.logger = Bukkit.getLogger();
     }
+    NamespacedKey namespacedKey = new NamespacedKey((Plugin) Bukkit.getServer().getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
 
     public void creativeGui(Player player) {
         Inventory clanMenu = Bukkit.createInventory(player, 27, "Меню клана");
         clanMenu.setItem(10, logicNameButton(player));
         clanMenu.setItem(13, logicStatisticButton());
         clanMenu.setItem(16, logicSettingButton());
+
+        PersistentDataHolder holder = (PersistentDataHolder) clanMenu.getHolder();
+        PersistentDataContainer container = holder.getPersistentDataContainer();
+        container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
         player.openInventory(clanMenu);
+        logger.info(container.get(namespacedKey, PersistentDataType.STRING));
     }
 
     public ItemStack logicNameButton(Player player) {
@@ -72,12 +80,14 @@ public class GuiCommand implements Listener {
 
         List<String> membersList = Arrays.asList(membersString.split(","));
 
-        nameButtonItemMeta.setLore(Arrays.asList(
-                ChatColor.GREEN + "Название: " + ChatColor.WHITE + clanName +
-                        ChatColor.GREEN + ", Префикс: " + ChatColor.WHITE + clanPrefix +
-                        ChatColor.GREEN + ", Создатель: " + ChatColor.WHITE + creatorName +
-                        ChatColor.GREEN + ", Участники: " + ChatColor.WHITE + String.join(", ", membersList)
-        ));
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GREEN + "Название: " + ChatColor.WHITE + clanName);
+        lore.add(ChatColor.GREEN + "Префикс: " + ChatColor.WHITE + clanPrefix);
+        lore.add(ChatColor.GREEN + "Создатель: " + ChatColor.WHITE + creatorName);
+        lore.add(ChatColor.GREEN + "Участники: " + ChatColor.WHITE + String.join(", ", membersList));
+
+        nameButtonItemMeta.setLore(lore);
+
         nameButton.setItemMeta(nameButtonItemMeta);
         return nameButton;
     }
@@ -129,9 +139,6 @@ public class GuiCommand implements Listener {
         String itemName = itemMeta.getDisplayName();
 
         switch (itemName) {
-            case "§eИнформация":
-                player.sendMessage("Информация, хули тыкаешь?");
-                break;
             case "§aУчастники":
                 openMembersInventory(player);
                 break;
@@ -140,9 +147,11 @@ public class GuiCommand implements Listener {
                 break;
             case "Название клана":
                 if(player.hasPermission("clan.creator")) {AnvilGuiReName(player);}
+                else{player.sendMessage("Изменять названия клана может только глава клана");}
                 break;
             case "Префикс клана":
                 if(player.hasPermission("clan.creator")) {AnvilGuiReTag(player);}
+                else{player.sendMessage("Изменять префикс клана может только глава клана");}
                 break;
         }
     }
@@ -176,14 +185,27 @@ public class GuiCommand implements Listener {
             membersInventory.addItem(skull);
         }
 
+        PersistentDataHolder holder = (PersistentDataHolder) membersInventory.getHolder();
+        PersistentDataContainer container = holder.getPersistentDataContainer();
+        container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
+        player.openInventory(membersInventory);
+        logger.info(container.get(namespacedKey, PersistentDataType.STRING));
+
         player.openInventory(membersInventory);
     }
 
     public void openSetingInventory(Player player) {
-        Inventory inventory = Bukkit.createInventory(player, 9, "Настройки клана");
-        inventory.setItem(1, book());
-        inventory.setItem(7, name_tag());
-        player.openInventory(inventory);
+        Inventory settingInventory = Bukkit.createInventory(player, 9, "Настройки клана");
+        settingInventory.setItem(1, book());
+        settingInventory.setItem(7, name_tag());
+
+        PersistentDataHolder holder = (PersistentDataHolder) settingInventory.getHolder();
+        PersistentDataContainer container = holder.getPersistentDataContainer();
+        container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
+        player.openInventory(settingInventory);
+        logger.info(container.get(namespacedKey, PersistentDataType.STRING));
+
+        player.openInventory(settingInventory);
     }
 
     private ItemStack book() {

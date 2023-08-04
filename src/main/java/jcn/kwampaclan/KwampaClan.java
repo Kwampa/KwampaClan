@@ -75,7 +75,9 @@ public final class KwampaClan extends JavaPlugin implements Listener {
 
         // Регистрация основной команды
         MainCommandClan mainCommandClan = new MainCommandClan(connection, luckPerms, createCommand, time, guiCommand, leaveCommand);
+
         getCommand("clan").setExecutor(mainCommandClan);
+        getCommand("clan").setTabCompleter(new TabCompleter());
 
         Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection), this);
 

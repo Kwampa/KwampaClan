@@ -3,6 +3,7 @@ jcn\kwampaclan\Command\InviteAcceptCommand.class
 jcn\kwampaclan\Command\KickCommand.class
 jcn\kwampaclan\KwampaClan.class
 jcn\kwampaclan\KwampaEventHandler.class
+jcn\kwampaclan\TabCompleter.class
 jcn\kwampaclan\Placeholder.class
 jcn\kwampaclan\MainCommandClan.class
 jcn\kwampaclan\Command\HelpCommand.class

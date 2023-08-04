@@ -43,7 +43,7 @@ public class Placeholder extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("prefix")) {
             String playerName = player.getName();
             String clanPrefix = String.valueOf(getClanPrefuxByMember(playerName, databaseManager.getConnection()));
-            if (clanPrefix != null) {
+            if (!clanPrefix.isEmpty()) {
                 // Добавляем цвет и скобки к префиксу
                 String coloredPrefix = "&r[" + clanPrefix.toUpperCase() + "&r]";
                 return coloredPrefix;
