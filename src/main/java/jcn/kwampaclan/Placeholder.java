@@ -44,7 +44,6 @@ public class Placeholder extends PlaceholderExpansion {
             String playerName = player.getName();
             String clanPrefix = String.valueOf(getClanPrefuxByMember(playerName, databaseManager.getConnection()));
             if (!clanPrefix.isEmpty()) {
-                // Добавляем цвет и скобки к префиксу
                 String coloredPrefix = "&r[" + clanPrefix.toUpperCase() + "&r]";
                 return coloredPrefix;
             } else {
@@ -67,6 +66,6 @@ public class Placeholder extends PlaceholderExpansion {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ""; // Если нету клана возращаем пустую строку!
+        return "";
     }
 }

@@ -33,17 +33,17 @@ public class KwampaEventHandler implements Listener {
     NamespacedKey namespacedKey = new NamespacedKey((Plugin) Bukkit.getServer().getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack clickedItem = event.getCurrentItem();
-
-        Inventory inventory = event.getClickedInventory();
-        PersistentDataHolder holder = (PersistentDataHolder) inventory.getHolder();
-        PersistentDataContainer container = holder.getPersistentDataContainer();
-        if(container.get(namespacedKey, PersistentDataType.STRING).equals("KwampaClan")){
-            event.setCancelled(true);
+        if(event.getCurrentItem() != null){
+            Player player = (Player) event.getWhoClicked();
+            ItemStack clickedItem = event.getCurrentItem();
+            Inventory inventory = event.getClickedInventory();
+            PersistentDataHolder holder = (PersistentDataHolder) inventory.getHolder();
+            PersistentDataContainer container = holder.getPersistentDataContainer();
+             if(container.get(namespacedKey, PersistentDataType.STRING) != null && container.get(namespacedKey, PersistentDataType.STRING).equals("KwampaClan")){
+                 event.setCancelled(true);
+             }
+             GuiCommand guiCommand = new GuiCommand(connection);
+             guiCommand.handleClanSettingsClick(player, clickedItem);
         }
-
-        GuiCommand guiCommand = new GuiCommand(connection);
-        guiCommand.handleClanSettingsClick(player, clickedItem);
     }
 }

@@ -18,12 +18,11 @@ public class InventoryClose implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event){
         if(event.getPlayer() instanceof Player) {
-            Player player = (Player) event.getPlayer();
             Inventory inventory = event.getInventory();
             PersistentDataHolder holder = (PersistentDataHolder) inventory.getHolder();
             PersistentDataContainer container = holder.getPersistentDataContainer();
-            if(container.get(namespacedKey, PersistentDataType.STRING).equals("KwampaClan")){
-                container.remove(namespacedKey);
+            if(container.get(namespacedKey, PersistentDataType.STRING) != null && container.get(namespacedKey, PersistentDataType.STRING).equals("KwampaClan")){
+                container.set(namespacedKey, PersistentDataType.STRING, "Defualt");
             }
         }
     }

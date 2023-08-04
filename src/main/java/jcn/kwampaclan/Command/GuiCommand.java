@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +18,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class GuiCommand implements Listener {
     NamespacedKey namespacedKey = new NamespacedKey((Plugin) Bukkit.getServer().getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
 
     public void creativeGui(Player player) {
-        Inventory clanMenu = Bukkit.createInventory(player, 27, "Меню клана");
+        Inventory clanMenu = Bukkit.createInventory(player, InventoryType.CHEST, "Меню клана");
         clanMenu.setItem(10, logicNameButton(player));
         clanMenu.setItem(13, logicStatisticButton());
         clanMenu.setItem(16, logicSettingButton());
@@ -174,38 +176,45 @@ public class GuiCommand implements Listener {
         }
 
         List<String> membersList = Arrays.asList(membersString.split(","));
-        Inventory membersInventory = Bukkit.createInventory(player, 27, "Участники клана " + clanName);
+        Inventory membersInventory = Bukkit.createInventory(player, InventoryType.CHEST, "Участники клана " + clanName);
 
         for (String memberName : membersList) {
             ItemStack skull = new ItemStack(PLAYER_HEAD);
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(memberName));
             skullMeta.setDisplayName(memberName);
             skull.setItemMeta(skullMeta);
             membersInventory.addItem(skull);
         }
 
-        PersistentDataHolder holder = (PersistentDataHolder) membersInventory.getHolder();
-        PersistentDataContainer container = holder.getPersistentDataContainer();
-        container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
         player.openInventory(membersInventory);
-        logger.info(container.get(namespacedKey, PersistentDataType.STRING));
-
-        player.openInventory(membersInventory);
+        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                PersistentDataHolder holder = (PersistentDataHolder) membersInventory.getHolder();
+                PersistentDataContainer container = holder.getPersistentDataContainer();
+                container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
+                logger.info(container.get(namespacedKey, PersistentDataType.STRING));
+            }
+        };
+        bukkitRunnable.runTaskLater(Bukkit.getPluginManager().getPlugin("KwampaClan"), 2l);
     }
 
     public void openSetingInventory(Player player) {
-        Inventory settingInventory = Bukkit.createInventory(player, 9, "Настройки клана");
-        settingInventory.setItem(1, book());
-        settingInventory.setItem(7, name_tag());
-
-        PersistentDataHolder holder = (PersistentDataHolder) settingInventory.getHolder();
-        PersistentDataContainer container = holder.getPersistentDataContainer();
-        container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
-        player.openInventory(settingInventory);
-        logger.info(container.get(namespacedKey, PersistentDataType.STRING));
+        Inventory settingInventory = Bukkit.createInventory(player, InventoryType.CHEST, "Настройки клана");
+        settingInventory.setItem(10, book());
+        settingInventory.setItem(16, name_tag());
 
         player.openInventory(settingInventory);
+        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                PersistentDataHolder holder = (PersistentDataHolder) settingInventory.getHolder();
+                PersistentDataContainer container = holder.getPersistentDataContainer();
+                container.set(namespacedKey, PersistentDataType.STRING, "KwampaClan");
+                logger.info(container.get(namespacedKey, PersistentDataType.STRING));
+            }
+        };
+        bukkitRunnable.runTaskLater(Bukkit.getPluginManager().getPlugin("KwampaClan"), 2l);
     }
 
     private ItemStack book() {

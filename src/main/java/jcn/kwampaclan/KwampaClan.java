@@ -80,6 +80,7 @@ public final class KwampaClan extends JavaPlugin implements Listener {
         getCommand("clan").setTabCompleter(new TabCompleter());
 
         Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(), this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderApi") != null) {
             new Placeholder(this).register();
