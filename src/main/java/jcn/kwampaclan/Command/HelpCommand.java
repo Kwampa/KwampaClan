@@ -13,5 +13,6 @@ public class HelpCommand {
         player.sendMessage(ChatColor.BLUE + "/clan leave - Коммадна для выхода из клана.");
         player.sendMessage(ChatColor.BLUE + "/clan kick - Команда для удаления игрока из клана.");
         player.sendMessage(ChatColor.BLUE + "/clan gui - Меню клана.");
+        player.sendMessage(ChatColor.BLUE + "/clan list - Список всех кланнов.");
     }
 }

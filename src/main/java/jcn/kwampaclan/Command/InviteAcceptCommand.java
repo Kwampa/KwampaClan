@@ -38,7 +38,7 @@ public class InviteAcceptCommand {
             return true;
         }
 
-        if (targetPlayer.hasPermission("clan.perm")) {
+        if (targetPlayer.hasPermission("clan.member")) {
             player.sendMessage(targetPlayerName + " уже состоит в другой команде.");
             return true;
         }

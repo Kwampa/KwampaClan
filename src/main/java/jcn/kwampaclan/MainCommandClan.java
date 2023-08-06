@@ -101,6 +101,14 @@ public class MainCommandClan implements CommandExecutor {
                 HelpCommand helpCommand = new HelpCommand();
                 helpCommand.HelpCommand(player);
                 break;
+            case "list":
+                ClanListCommand clanListCommand = new ClanListCommand(connection);
+                try {
+                    clanListCommand.ClanList(player);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
             default:
                 player.sendMessage(ChatColor.BLUE + "Неизвестная команнда! Для просмотра всех комманд используйте: /clan help!");
             }
