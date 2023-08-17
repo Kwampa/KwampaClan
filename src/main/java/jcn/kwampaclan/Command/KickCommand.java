@@ -1,6 +1,7 @@
 package jcn.kwampaclan.Command;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class KickCommand {
+    public static final String PLUGINPREFIX = "[KwampaClan]";
     private Connection connection;
 
     public KickCommand(Connection connection) {
@@ -20,7 +22,7 @@ public class KickCommand {
         Player targetPlayer = Bukkit.getServer().getPlayer(targetPlayerName);
 
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            player.sendMessage("Игрок с именем " + targetPlayerName + " не найден или не в сети.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED  + " Игрок с именем " + targetPlayerName + " не найден или не в сети.");
             return;
         }
 
@@ -28,19 +30,19 @@ public class KickCommand {
         String targetClanName = getClanName(targetPlayer);
 
         if (executorClanName == null || targetClanName == null || !executorClanName.equals(targetClanName)) {
-            player.sendMessage("Игрок " + targetPlayerName + " не является участником вашего клана.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED  + "Игрок с именем " + targetPlayerName + " не является участником вашего клана.");
             return;
         }
 
         String executorClanCreator = getClanCreator(player);
         if (executorClanCreator == null || !executorClanCreator.equalsIgnoreCase(player.getName())) {
-            player.sendMessage("Вы не являетесь главой клана и не можете кикать участников.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Вы не являетесь главой клана и не можете кикать участников.");
             return;
         }
 
         removePlayerFromClan(targetPlayer);
 
-        player.sendMessage("Игрок " + targetPlayerName + " успешно кикнут из клана.");
+        player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Игрок с именем" + targetPlayerName + " успешно кикнут из клана.");
     }
 
     private String getClanName(Player player) {

@@ -26,6 +26,7 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
                 completions.add("kick");
                 completions.add("accept");
                 completions.add("list");
+                completions.add("delete");
             } else if (strings.length == 2) {
                 if (strings[0].equalsIgnoreCase("kick") || strings[0].equalsIgnoreCase("invite") || strings[0].equalsIgnoreCase("accept")) {
                     for (String playerName : getAllOnlinePlayerNames()) {

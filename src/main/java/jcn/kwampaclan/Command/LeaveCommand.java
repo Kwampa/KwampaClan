@@ -3,6 +3,7 @@ package jcn.kwampaclan.Command;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 public class LeaveCommand {
     private Connection connection;
     private LuckPerms luckPerms;
+    public static final String PLUGINPREFIX = "[KwampaClan]";
 
     public LeaveCommand(Connection connection, LuckPerms luckPerms) {
         this.connection = connection;
@@ -21,18 +23,18 @@ public class LeaveCommand {
     public void leave(Player player) {
         if (!player.hasPermission("clan.creator")) {
             if (player.hasPermission("clan.member")) {
-                player.sendMessage("Вы покинули клан");
+                player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы покинули клан");
 
                 // Забираем у игрока пермишен "clan.member"
                 removePerm(player, "clan.member");
                 removePlayerFromClan(player);
 
             } else {
-                player.sendMessage("Вы не находитесь в клане");
+                player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Вы не находитесь в клане");
             }
         } else {
-            player.sendMessage("Вы не можете покинуть свой клан");
-            player.sendMessage("В крайнем случае свяжитесь с администрацией");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + "Вы не можете покинуть свой клан");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + "Используйте /clan delete");
         }
     }
 

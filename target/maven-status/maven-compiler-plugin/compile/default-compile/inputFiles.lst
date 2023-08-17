@@ -1,4 +1,6 @@
+C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\DeleteCommand.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\InviteAcceptCommand.java
+C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\ClanDeleteLogic\CommandDelete.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\HelpCommand.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\GuiCommand.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\KwampaClan.java
@@ -6,6 +8,7 @@ C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwa
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\LeaveCommand.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Placeholder.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\Command\CreateCommand.java
+C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\ClanDeleteLogic\CommandCancelDelete.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\KwampaEventHandler.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\MySQLDatabaseManager.java
 C:\Users\Alexe\OneDrive\Рабочий стол\KwamaClan3\src\main\java\jcn\kwampaclan\MainCommandClan.java

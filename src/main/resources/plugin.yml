@@ -8,3 +8,7 @@ softdepend:
 commands:
   clan:
     description: Основная команда плагина;
+  delete:
+    description: Удаление клана;
+  canceldelete:
+    description: Отмена удаления клана;

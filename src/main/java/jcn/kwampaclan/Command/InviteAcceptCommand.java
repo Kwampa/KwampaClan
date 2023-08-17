@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -20,6 +21,7 @@ public class InviteAcceptCommand {
     private Connection connection;
     private LuckPerms luckPerms;
     private Logger logger;
+    public static final String PLUGINPREFIX = "[KwampaClan]";
 
     public InviteAcceptCommand(Connection connection, LuckPerms luckPerms, Map<Player, Player> time) {
         this.connection = connection;
@@ -30,21 +32,29 @@ public class InviteAcceptCommand {
     }
 
     public boolean createInvite(Player player, String[] strings) {
+        String inviterName = strings[1];
+        Player inviter = Bukkit.getPlayer(inviterName);
+
+        if (inviter == null || !inviter.isOnline()) {
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Игрок с именем " + inviterName + " не найден или не в сети.");
+            return true;
+        }
+
         String targetPlayerName = strings[1];
         Player targetPlayer = Bukkit.getServer().getPlayer(targetPlayerName);
 
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            player.sendMessage("Игрок с именем " + targetPlayerName + " не найден или не в сети.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Игрок с именем " + targetPlayerName + " не найден или не в сети.");
             return true;
         }
 
         if (targetPlayer.hasPermission("clan.member")) {
-            player.sendMessage(targetPlayerName + " уже состоит в другой команде.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Игрок с именем" + targetPlayerName + " уже состоит в другой команде.");
             return true;
         }
 
         if (isPlayerInvited(targetPlayer)) {
-            player.sendMessage("Игрок " + targetPlayerName + " уже приглашен в клан.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED +  " Игрок с именем" + targetPlayerName + " уже приглашен в клан.");
             return true;
         }
 
@@ -54,8 +64,8 @@ public class InviteAcceptCommand {
 
     public void sendInvitation(Player player, Player targetPlayer) {
         time.put(targetPlayer, player);
-        targetPlayer.sendMessage("Вы получили приглашение вступить в клан от игрока: " + player.getName());
-        targetPlayer.sendMessage("Принять приглашение: /clan accept");
+        targetPlayer.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы получили приглашение вступить в клан от игрока: " + player.getName());
+        targetPlayer.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Принять приглашение: /clan accept");
 
         // Устанавливаем временную метку приглашения
         inviteTimes.put(targetPlayer, System.currentTimeMillis());
@@ -68,7 +78,7 @@ public class InviteAcceptCommand {
     public void acceptInvitation(Player player, LuckPerms luckPerms) {
         Player inviter = time.remove(player);
         if (inviter != null) {
-            player.sendMessage("Вы приняли приглашение от игрока " + inviter.getName());
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы приняли приглашение от игрока " + inviter.getName());
 
             // Выдаем разрешение игроку при принятии приглашения
             addPerm(player, "clan.member");
@@ -77,7 +87,7 @@ public class InviteAcceptCommand {
             updateMembersList(inviter, player.getName());
 
             // Уведомляем отправителя о том, что приглашение принято
-            inviter.sendMessage("Игрок " + player.getName() + " принял ваше приглашение в клан.");
+            inviter.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Игрок " + player.getName() + " принял ваше приглашение в клан.");
 
             // Проверяем и удаляем истекшие приглашения
             checkExpiredInvitations();

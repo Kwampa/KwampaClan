@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 
 public class CreateCommand {
     private final String ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static final String PLUGINPREFIX = "[KwampaClan]";
     private Connection connection;
     private LuckPerms luckPerms;
     private Logger logger;
@@ -26,8 +28,14 @@ public class CreateCommand {
     }
 
     public void ClanCreate(Player player, String[] strings) throws SQLException {
+        if (strings.length < 3) {
+            player.damage(1);
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Ошибка! Название клана должно состоять из 2х слов!");
+            return;
+        }
+
         if (!player.hasPermission("clan.creator")) {
-            player.sendMessage("У вас недостаточно прав для создания кланов. Обратитесь в тикет, если хотите создать клан.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Ошибка! У вас недостаточно прав для создания кланов. Обратитесь в тикет, если хотите создать клан.");
             return;
         }
 
@@ -35,12 +43,12 @@ public class CreateCommand {
         logger.info("Попытка создания нового клана с названием: " + clanname);
 
         if (checkClanName(clanname)) {
-            player.sendMessage("Клан с таким названием уже существует.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Ошибка! Клан с таким названием уже существует.");
             return;
         }
 
         if (player.hasPermission("clan.member")) {
-            player.sendMessage("Вы уже находитесь в клане.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Ошибка! Вы уже находитесь в клане.");
             return;
         }
 
@@ -49,7 +57,7 @@ public class CreateCommand {
         boolean available = checkClanID(id);
 
         if (!available) {
-            player.sendMessage("Не удалось создать клан. Повторите попытку позже.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Ошибка! Не удалось создать клан. Повторите попытку позже.");
             return;
         }
 
@@ -68,12 +76,13 @@ public class CreateCommand {
             statement.executeUpdate();
             statement.close();
 
-            player.sendMessage("Клан успешно создан!");
-            player.sendMessage("Название клана: " + clanname + " Префикс клана: " + clanPrefix);
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Клан успешно создан!");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Название клана: " + clanname);
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Префикс клана: " + "[" + clanPrefix + "]");
             addPerm(player, "clan.member");
         } catch (SQLException e) {
             e.printStackTrace();
-            player.sendMessage("Произошла ошибка при создании клана. Повторите попытку позже.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Произошла ошибка при создании клана. Повторите попытку позже.");
         }
     }
 

@@ -1,9 +1,8 @@
 package jcn.kwampaclan;
 
-import jcn.kwampaclan.Command.CreateCommand;
-import jcn.kwampaclan.Command.GuiCommand;
-import jcn.kwampaclan.Command.InviteAcceptCommand;
-import jcn.kwampaclan.Command.LeaveCommand;
+import jcn.kwampaclan.ClanDeleteLogic.CommandCancelDelete;
+import jcn.kwampaclan.ClanDeleteLogic.CommandDelete;
+import jcn.kwampaclan.Command.*;
 import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,7 +24,7 @@ public final class KwampaClan extends JavaPlugin implements Listener {
     private Connection connection;
     private LuckPerms luckPerms;
     private Logger logger;
-    private MySQLDatabaseManager databaseManager; // Added MySQLDatabaseManager instance
+    private MySQLDatabaseManager databaseManager;
 
 
     @Override
@@ -33,16 +32,13 @@ public final class KwampaClan extends JavaPlugin implements Listener {
         this.logger = Bukkit.getLogger();
         this.logger.info(PLUGINPREFIX + " Запущен");
 
-        // Создание папки плагина
         File dataFolder = getDataFolder();
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
         }
 
-        // Загрузка и создание конфигурационного файла
         saveDefaultConfig();
 
-        // Подключение к базе данных MySQL
         if (!setupDatabase()) {
             logger.severe("Не удалось подключиться к базе данных. Плагин будет отключен.");
             getServer().getPluginManager().disablePlugin(this);
@@ -57,7 +53,6 @@ public final class KwampaClan extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
-        // Подгрузка LuckPerms
         if (!setupLuckPerms()) {
             logger.severe("LuckPerms не найден или не активирован. Плагин будет отключен.");
             getServer().getPluginManager().disablePlugin(this);
@@ -73,11 +68,12 @@ public final class KwampaClan extends JavaPlugin implements Listener {
 
         LeaveCommand leaveCommand = new LeaveCommand(connection, luckPerms);
 
-        // Регистрация основной команды
         MainCommandClan mainCommandClan = new MainCommandClan(connection, luckPerms, createCommand, time, guiCommand, leaveCommand);
 
         getCommand("clan").setExecutor(mainCommandClan);
         getCommand("clan").setTabCompleter(new TabCompleter());
+        getCommand("delete").setExecutor(new CommandDelete(connection));
+        getCommand("canceldelete").setExecutor(new CommandCancelDelete(connection));
 
         Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection), this);
         Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(), this);
@@ -106,7 +102,7 @@ public final class KwampaClan extends JavaPlugin implements Listener {
         String username = getConfig().getString("mysql.username");
         String password = getConfig().getString("mysql.password");
 
-        databaseManager = new MySQLDatabaseManager(host, port, database, username, password); // Create the MySQLDatabaseManager instance
+        databaseManager = new MySQLDatabaseManager(host, port, database, username, password);
         if (!databaseManager.connect()) {
             return false;
         }

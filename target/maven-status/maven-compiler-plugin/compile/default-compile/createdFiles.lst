@@ -1,3 +1,4 @@
+jcn\kwampaclan\ClanDeleteLogic\CommandDelete.class
 jcn\kwampaclan\InventoryClose.class
 jcn\kwampaclan\MySQLDatabaseManager.class
 jcn\kwampaclan\Command\GuiCommand$2.class
@@ -8,9 +9,11 @@ jcn\kwampaclan\KwampaClan.class
 jcn\kwampaclan\KwampaEventHandler.class
 jcn\kwampaclan\Command\GuiCommand$1.class
 jcn\kwampaclan\TabCompleter.class
+jcn\kwampaclan\ClanDeleteLogic\CommandCancelDelete.class
 jcn\kwampaclan\Placeholder.class
 jcn\kwampaclan\MainCommandClan.class
 jcn\kwampaclan\Command\HelpCommand.class
 jcn\kwampaclan\Command\GuiCommand.class
 jcn\kwampaclan\Command\CreateCommand.class
 jcn\kwampaclan\Command\LeaveCommand.class
+jcn\kwampaclan\Command\DeleteCommand.class
