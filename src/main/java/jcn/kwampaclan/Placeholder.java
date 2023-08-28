@@ -15,7 +15,6 @@ public class Placeholder extends PlaceholderExpansion {
 
     public Placeholder(KwampaClan plugin) {
         this.plugin = plugin;
-        // The MySQLDatabaseManager object is created in KwampaClan class and passed to Placeholder class.
         this.databaseManager = plugin.getMySQLDatabaseManager();
     }
 

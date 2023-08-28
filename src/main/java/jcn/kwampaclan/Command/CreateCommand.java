@@ -1,5 +1,6 @@
 package jcn.kwampaclan.Command;
 
+import jcn.kwampaclan.LuckpPerms;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -79,7 +80,9 @@ public class CreateCommand {
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Клан успешно создан!");
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Название клана: " + clanname);
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Префикс клана: " + "[" + clanPrefix + "]");
-            addPerm(player, "clan.member");
+
+            LuckpPerms luckPermsclass = new LuckpPerms(luckPerms);
+            luckPermsclass.addPerm(player, "clan.member");
         } catch (SQLException e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Произошла ошибка при создании клана. Повторите попытку позже.");
@@ -150,13 +153,5 @@ public class CreateCommand {
             e.printStackTrace();
         }
         return "";
-    }
-
-    public void addPerm(Player player, String permission) {
-        User user = this.luckPerms.getUserManager().getUser(player.getUniqueId());
-        if (permission.equals("clan.member")) {
-            user.data().add(Node.builder(permission).build());
-        }
-        this.luckPerms.getUserManager().saveUser(user);
     }
 }

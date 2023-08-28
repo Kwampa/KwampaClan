@@ -1,5 +1,7 @@
 package jcn.kwampaclan;
 
+import jcn.Listener.InventoryClose;
+import jcn.Listener.KwampaEventHandler;
 import jcn.kwampaclan.ClanDeleteLogic.CommandCancelDelete;
 import jcn.kwampaclan.ClanDeleteLogic.CommandDelete;
 import jcn.kwampaclan.Command.*;
@@ -72,11 +74,11 @@ public final class KwampaClan extends JavaPlugin implements Listener {
 
         getCommand("clan").setExecutor(mainCommandClan);
         getCommand("clan").setTabCompleter(new TabCompleter());
-        getCommand("delete").setExecutor(new CommandDelete(connection));
+        getCommand("delete").setExecutor(new CommandDelete(connection, (LuckpPerms) luckPerms));
         getCommand("canceldelete").setExecutor(new CommandCancelDelete(connection));
 
-        Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection, this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderApi") != null) {
             new Placeholder(this).register();

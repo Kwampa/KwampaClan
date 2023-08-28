@@ -1,5 +1,7 @@
 package jcn.kwampaclan.Command;
 
+import jcn.kwampaclan.DataBase;
+import jcn.kwampaclan.LuckpPerms;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
 
 public class InviteAcceptCommand {
     private final Map<Player, Player> time;
-    private final Map<Player, Long> inviteTimes; // Карта для хранения времени приглашения
+    private final Map<Player, Long> inviteTimes;
     private Connection connection;
     private LuckPerms luckPerms;
     private Logger logger;
@@ -54,7 +56,7 @@ public class InviteAcceptCommand {
         }
 
         if (isPlayerInvited(targetPlayer)) {
-            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED +  " Игрок с именем" + targetPlayerName + " уже приглашен в клан.");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED +  " Игрок с именем " + targetPlayerName + " уже приглашен в клан.");
             return true;
         }
 
@@ -64,10 +66,10 @@ public class InviteAcceptCommand {
 
     public void sendInvitation(Player player, Player targetPlayer) {
         time.put(targetPlayer, player);
+        player.sendMessage((ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы отправили приглашение вступить в клан игроку: " + targetPlayer.getName()));
         targetPlayer.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы получили приглашение вступить в клан от игрока: " + player.getName());
         targetPlayer.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Принять приглашение: /clan accept");
 
-        // Устанавливаем временную метку приглашения
         inviteTimes.put(targetPlayer, System.currentTimeMillis());
     }
 
@@ -80,79 +82,19 @@ public class InviteAcceptCommand {
         if (inviter != null) {
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Вы приняли приглашение от игрока " + inviter.getName());
 
-            // Выдаем разрешение игроку при принятии приглашения
-            addPerm(player, "clan.member");
+            LuckpPerms luckpPermsclass = new LuckpPerms(luckPerms);
 
-            // Добавляем игрока в список участников клана
-            updateMembersList(inviter, player.getName());
+            luckpPermsclass.addPerm(player, "clan.member");
 
-            // Уведомляем отправителя о том, что приглашение принято
+            DataBase dataBase = new DataBase(connection);
+            dataBase.updateMembersList(inviter, player.getName());
+
             inviter.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Игрок " + player.getName() + " принял ваше приглашение в клан.");
 
-            // Проверяем и удаляем истекшие приглашения
             checkExpiredInvitations();
         }
     }
 
-    public void addPerm(Player player, String permission) {
-        User user = this.luckPerms.getUserManager().getUser(player.getUniqueId());
-        if (permission.equals("clan.member")) {
-            user.data().add(Node.builder(permission).build());
-        }
-        this.luckPerms.getUserManager().saveUser(user);
-    }
-
-    private void updateMembersList(Player inviter, String playerName) {
-        try {
-            String clanname = getClanNameByCreator(inviter.getName());
-            if (clanname.isEmpty()) {
-                logger.warning("Не удалось найти клан для игрока " + inviter.getName());
-                return;
-            }
-
-            String existingMembers = getExistingMembers(clanname);
-            existingMembers = existingMembers.isEmpty() ? playerName : existingMembers + "," + playerName;
-            PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = ? WHERE clanname = ?");
-            statement.setString(1, existingMembers);
-            statement.setString(2, clanname);
-            statement.executeUpdate();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getClanNameByCreator(String creatorName) throws SQLException {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT clanname FROM clans WHERE clancreator = ?");
-            statement.setString(1, creatorName);
-            ResultSet resultSet = statement.executeQuery();
-            String clanName = resultSet.next() ? resultSet.getString("clanname") : "";
-            resultSet.close();
-            statement.close();
-            return clanName;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private String getExistingMembers(String clanname) throws SQLException {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT members FROM clans WHERE clanname = ?");
-            statement.setString(1, clanname);
-            ResultSet resultSet = statement.executeQuery();
-            String members = resultSet.next() ? resultSet.getString("members") : "";
-            resultSet.close();
-            statement.close();
-            return members;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    // Метод для проверки и удаления истекших приглашений (старше 30 секунд)
     public void checkExpiredInvitations() {
         long currentTime = System.currentTimeMillis();
         inviteTimes.entrySet().removeIf(entry -> currentTime - entry.getValue() >= 30000);

@@ -1,5 +1,6 @@
 package jcn.kwampaclan.Command;
 
+import jcn.kwampaclan.DataBase;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -253,8 +254,9 @@ public class GuiCommand implements Listener {
             if (!stateSnapshot.getText().equals("")) {
                 String newName = stateSnapshot.getText();
                 String name = ChatColor.translateAlternateColorCodes('&', newName);
+                DataBase dataBase = new DataBase(connection);
                 player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Новое название клана: " + name);
-                updateClanNameByCreator(player.getName(), name);
+                dataBase.updateClanNameByCreator(player.getName(), name);
                 return Arrays.asList(AnvilGUI.ResponseAction.close());
             } else {
                 return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Попробуйте еще раз"));
@@ -276,8 +278,9 @@ public class GuiCommand implements Listener {
                 String newName = stateSnapshot.getText();
                 String prefix = ChatColor.translateAlternateColorCodes('&', newName);
                 if(lengthWithoutColor(prefix) == 2) {
+                    DataBase dataBase = new DataBase(connection);
                     player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Новый префикс клана: " + prefix);
-                    updateClanPrefixByCreator(player.getName(), prefix);
+                    dataBase.updateClanPrefixByCreator(player.getName(), prefix);
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
                 }
                 else {
@@ -289,26 +292,6 @@ public class GuiCommand implements Listener {
             return null;
         });
         builder.open(player);
-    }
-
-    public void updateClanPrefixByCreator(String creatorName, String newPrefix) {
-        try {PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanprefix = ? WHERE clancreator = ?");
-            statement.setString(1, newPrefix);
-            statement.setString(2, creatorName);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateClanNameByCreator(String creatorName, String newName) {
-        try {PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanname = ? WHERE clancreator = ?");
-            statement.setString(1, newName);
-            statement.setString(2, creatorName);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

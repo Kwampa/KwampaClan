@@ -80,7 +80,7 @@ public class MainCommandClan implements CommandExecutor {
                     player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Использование: /clan kick (ник игрока)");
                     return true;
                 }
-                KickCommand kickCommand = new KickCommand(connection);
+                KickCommand kickCommand = new KickCommand(connection, luckPerms);
                 kickCommand.execute(player, strings);
                 break;
 
