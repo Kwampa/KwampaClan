@@ -8,145 +8,154 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataBase {
-    private Connection connection;
-    public DataBase(Connection connection){
+    private final Connection connection;
+    private Logger logger = Bukkit.getLogger();
+
+    public DataBase(Connection connection) {
         this.connection = connection;
     }
-    public String getClanInfo() {//Получаем информацию по всем кланам из базы данных
+
+    public String getClanInfo() {
         StringBuilder info = new StringBuilder();
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT clanname AS ClanName, members AS Members, clanprefix AS Prefix " + "FROM clans;");
+            PreparedStatement statement = connection.prepareStatement("SELECT clanname AS ClanName, members AS Members, clanprefix AS Prefix FROM clans;");
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 String clanName = resultSet.getString("ClanName");
                 String members = resultSet.getString("Members");
                 String prefix = resultSet.getString("Prefix");
                 int valueOfMembers = members.split(",").length;
-                info.append(ChatColor.RESET + "Название: ").append(clanName).append("\n");
-                info.append(ChatColor.RESET + "Префикс: ").append(prefix).append("\n");
-                info.append(ChatColor.RESET + "Количество участников: ").append(valueOfMembers).append("\n");
+
+                info.append(ChatColor.RESET).append("Название: ").append(clanName).append("\n");
+                info.append(ChatColor.RESET).append("Префикс: ").append(prefix).append("\n");
+                info.append(ChatColor.RESET).append("Количество участников: ").append(valueOfMembers).append("\n");
                 info.append("\n");
             }
             statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while fetching clan info from the database.", e);
         }
         return info.toString();
     }
 
-    public void deleteClan(Player player) throws SQLException {//Удаление клана из базы данных
-        Logger logger = Bukkit.getLogger();
-        String clanname = getClanName(player);
-        logger.info("Удаляем клан");
-        PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM clans WHERE clanname = ?");
-        preparedStatement.setString(1, clanname);
-        preparedStatement.executeUpdate();
-    }
+    public void deleteClan(Player player) throws SQLException {
+        String clanName = getClanName(player);
+        if (clanName == null) {
+            logger.warning("Clan name not found for player: " + player.getName());
+            return;
+        }
 
-    public void updateMembersList(Player inviter, String playerName) {//Обновление списка участников клана после добавления нового игрока
-        try {
-            String clanname = getClanName(inviter);
-            String existingMembers = getClanMembers(clanname);
-            existingMembers = existingMembers.isEmpty() ? playerName : existingMembers + "," + playerName;
-            PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = ? WHERE clanname = ?");
-            statement.setString(1, existingMembers);
-            statement.setString(2, clanname);
-            statement.executeUpdate();
-            statement.close();
+        logger.info("Deleting clan: " + clanName);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM clans WHERE clanname = ?")) {
+            preparedStatement.setString(1, clanName);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while deleting clan from the database.", e);
         }
     }
 
-    private String getClanMembers(String clanname) throws SQLException {//Получаем список игроков из определнного клана
+    public void updateMembersList(Player inviter, String playerName) {
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT members FROM clans WHERE clanname = ?");
-            statement.setString(1, clanname);
-            ResultSet resultSet = statement.executeQuery();
-            String members = resultSet.next() ? resultSet.getString("members") : "";
-            resultSet.close();
-            statement.close();
-            return members;
+            logger.info("Updating clan member list after adding a new player.");
+            String clanname = getClanName(inviter);
+            if (clanname == null) {
+                logger.warning("Clan name not found for player: " + inviter.getName());
+                return;
+            }
+
+            String existingMembers = getClanMembers(clanname);
+            existingMembers = existingMembers.isEmpty() ? playerName : existingMembers + "," + playerName;
+
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = ? WHERE clanname = ?")) {
+                statement.setString(1, existingMembers);
+                statement.setString(2, clanname);
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while updating clan member list.", e);
+        }
+    }
+
+    private String getClanMembers(String clanname) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT members FROM clans WHERE clanname = ?")) {
+            statement.setString(1, clanname);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getString("members") : "";
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "An error occurred while fetching clan members from the database.", e);
         }
         return "";
     }
 
-    public String getClanName(Player player) {//Получаем название кланна по нику участника клана
+    public String getClanName(Player player) {
         String playerName = player.getName();
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT clanname FROM clans WHERE members LIKE ?");
+        try (PreparedStatement statement = connection.prepareStatement("SELECT clanname FROM clans WHERE members LIKE ?")) {
             statement.setString(1, "%" + playerName + "%");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                String clanName = resultSet.next() ? resultSet.getString("clanname") : "";
-                resultSet.close();
-                statement.close();
-                return clanName;
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("clanname");
+                }
             }
-            resultSet.close();
-            statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while fetching clan name from the database.", e);
         }
         return null;
     }
 
-    public String getClanCreator(Player player) {//Получаем создателя клана по названию клана
+    public void removePlayerFromClan(Player player) {
         String playerName = player.getName();
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT clancreator FROM clans WHERE members LIKE ?");
-            statement.setString(1, "%" + playerName + "%");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                String clanCreator = resultSet.getString("clancreator");
-                resultSet.close();
-                statement.close();
-                return clanCreator;
-            }
-            resultSet.close();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void removePlayerFromClan(Player player) {//Удаляем игрока из клана
-        String playerName = player.getName();
-        try {
+            logger.info("Removing player from clan: " + playerName);
             PreparedStatement statement = connection.prepareStatement("UPDATE clans SET members = REPLACE(members, ?, '') WHERE members LIKE ?");
             statement.setString(1, "," + playerName);
             statement.setString(2, "%" + playerName + "%");
             statement.executeUpdate();
             statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while removing player from the clan.", e);
         }
     }
 
-    public void updateClanNameByCreator(String creatorName, String newName) {//Обновляем название клана
-        try {PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanname = ? WHERE clancreator = ?");
+    public void updateClanNameByCreator(String creatorName, String newName) {
+        try {
+            logger.info("Updating clan name for creator: " + creatorName);
+            PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanname = ? WHERE clancreator = ?");
             statement.setString(1, newName);
             statement.setString(2, creatorName);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while updating clan name by creator.", e);
         }
     }
 
-    public void updateClanPrefixByCreator(String creatorName, String newPrefix) {//Обновляем префикс клана
+    public void updateClanPrefixByCreator(String creatorName, String newPrefix) {
         try {
+            logger.info("Updating clan prefix for creator: " + creatorName);
             PreparedStatement statement = connection.prepareStatement("UPDATE clans SET clanprefix = ? WHERE clancreator = ?");
             statement.setString(1, newPrefix);
             statement.setString(2, creatorName);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "An error occurred while updating clan prefix by creator.", e);
         }
+    }
+    public String getClanCreator(Player player) {
+        String playerName = player.getName();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT clancreator FROM clans WHERE members LIKE ?")) {
+            statement.setString(1, "%" + playerName + "%");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("clancreator");
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "An error occurred while fetching clan creator from the database.", e);
+        }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package jcn.Listener;
 
+import jcn.kwampaclan.KwampaClan;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -13,11 +14,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 public class InventoryClose implements Listener {
-    private Plugin plugin;
-    public InventoryClose(Plugin plugin){
+    private KwampaClan plugin;
+    public InventoryClose(KwampaClan plugin){
         this.plugin = plugin;
     }
-    NamespacedKey namespacedKey = new NamespacedKey(plugin, "KwampaClan");
+    NamespacedKey namespacedKey = new NamespacedKey(Bukkit.getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();

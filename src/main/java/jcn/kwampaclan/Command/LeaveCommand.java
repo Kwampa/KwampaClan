@@ -32,8 +32,8 @@ public class LeaveCommand {
                 player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Вы не находитесь в клане");
             }
         } else {
-            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + "Вы не можете покинуть свой клан");
-            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + "Используйте /clan delete");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Вы не можете покинуть свой клан");
+            player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Используйте /clan delete");
         }
     }
 }

@@ -2,8 +2,6 @@ package jcn.kwampaclan.Command;
 
 import jcn.kwampaclan.LuckpPerms;
 import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

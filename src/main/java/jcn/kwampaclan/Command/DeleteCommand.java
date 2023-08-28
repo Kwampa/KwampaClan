@@ -25,7 +25,7 @@ public class DeleteCommand {
             Component confirmButton = Component.text("Удалить").clickEvent(ClickEvent.runCommand("/delete")).color(TextColor.color(255, 0, 0));
             Component cancelButton = Component.text("Оставить").clickEvent(ClickEvent.runCommand("/canceldelete")).color(TextColor.color(0, 204, 0));
             Component message = Component.text()
-                    .append(Component.text("Вы хотите удалить клан?").color(TextColor.color(255, 170, 0)))
+                    .append(Component.text("Вы хотите удалить клан").color(TextColor.color(255, 170, 0)))
                     .append(Component.text(clanname).color(TextColor.color(255, 170, 0)))
                     .append(Component.text("?").color(TextColor.color(255, 170, 0)))
                     .append(Component.newline())

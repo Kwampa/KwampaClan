@@ -1,6 +1,7 @@
 package jcn.Listener;
 
 import jcn.kwampaclan.Command.GuiCommand;
+import jcn.kwampaclan.KwampaClan;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -20,14 +21,14 @@ import java.sql.Connection;
 
 public class KwampaEventHandler implements Listener {
     private Connection connection;
-    private Plugin plugin;
+    private KwampaClan plugin;
 
-    public KwampaEventHandler(Connection connection, Plugin plugin) {
+    public KwampaEventHandler(Connection connection, KwampaClan plugin) {
         this.connection = connection;
         this.plugin = plugin;
     }
 
-    NamespacedKey namespacedKey = new NamespacedKey(plugin, "KwampaClan");
+    NamespacedKey namespacedKey = new NamespacedKey(Bukkit.getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getCurrentItem() != null) {

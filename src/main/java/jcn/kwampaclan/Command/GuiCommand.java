@@ -151,7 +151,8 @@ public class GuiCommand implements Listener {
                 openSetingInventory(player);
                 break;
             case "Название клана":
-                if(player.hasPermission("clan.creator")) {AnvilGuiReName(player);}
+                if(player.hasPermission("clan.creator")) {
+                    AnvilGuiReName(player);}
                 else{player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Изменять названия клана может только глава клана");}
                 break;
             case "Префикс клана":

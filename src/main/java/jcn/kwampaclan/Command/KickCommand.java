@@ -43,7 +43,7 @@ public class KickCommand {
         }
 
         LuckpPerms luckpPermsclass = new LuckpPerms(luckPerms);
-        luckpPermsclass.removePerm(player, "clan.member");
+        luckpPermsclass.removePerm(targetPlayer, "clan.member");
 
         dataBase.removePlayerFromClan(targetPlayer);
 

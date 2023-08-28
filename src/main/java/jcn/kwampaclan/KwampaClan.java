@@ -74,7 +74,7 @@ public final class KwampaClan extends JavaPlugin implements Listener {
 
         getCommand("clan").setExecutor(mainCommandClan);
         getCommand("clan").setTabCompleter(new TabCompleter());
-        getCommand("delete").setExecutor(new CommandDelete(connection, (LuckpPerms) luckPerms));
+        getCommand("delete").setExecutor(new CommandDelete(connection, luckPerms));
         getCommand("canceldelete").setExecutor(new CommandCancelDelete(connection));
 
         Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection, this), this);

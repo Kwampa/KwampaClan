@@ -16,9 +16,9 @@ import java.sql.SQLException;
 public class CommandDelete implements CommandExecutor {
     public static final String PLUGINPREFIX = "[KwampaClan]";
     private Connection connection;
-    private LuckpPerms luckpPerms;
+    private LuckPerms luckpPerms;
 
-    public CommandDelete(Connection connection, LuckpPerms luckpPerms) {
+    public CommandDelete(Connection connection, LuckPerms luckpPerms) {
         this.connection = connection;
         this.luckpPerms = luckpPerms;
     }
@@ -33,7 +33,7 @@ public class CommandDelete implements CommandExecutor {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            LuckpPerms luckpPerms1 = new LuckpPerms((LuckPerms) luckpPerms);
+            LuckpPerms luckpPerms1 = new LuckpPerms(luckpPerms);
             luckpPerms1.removePerm(player, "clan.creator");
             luckpPerms1.removePerm(player, "clan.member");
             player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RESET + " Клан удален");
