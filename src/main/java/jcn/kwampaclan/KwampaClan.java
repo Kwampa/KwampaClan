@@ -77,8 +77,8 @@ public final class KwampaClan extends JavaPlugin implements Listener {
         getCommand("delete").setExecutor(new CommandDelete(connection, luckPerms));
         getCommand("canceldelete").setExecutor(new CommandCancelDelete(connection));
 
-        Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection, this), this);
-        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new KwampaEventHandler(connection), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new InventoryClose(), this);
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderApi") != null) {
             new Placeholder(this).register();

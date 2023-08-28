@@ -21,11 +21,9 @@ import java.sql.Connection;
 
 public class KwampaEventHandler implements Listener {
     private Connection connection;
-    private KwampaClan plugin;
 
-    public KwampaEventHandler(Connection connection, KwampaClan plugin) {
+    public KwampaEventHandler(Connection connection) {
         this.connection = connection;
-        this.plugin = plugin;
     }
 
     NamespacedKey namespacedKey = new NamespacedKey(Bukkit.getPluginManager().getPlugin("KwampaClan"), "KwampaClan");

@@ -67,8 +67,8 @@ public class MainCommandClan implements CommandExecutor {
                 break;
 
             case "accept":
-                if (strings.length < 2) {
-                    player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Использование: /clan accept (ник игрока)");
+                if (strings.length < 1) {
+                    player.sendMessage(ChatColor.GOLD + PLUGINPREFIX + ChatColor.RED + " Использование: /clan accept");
                     return true;
                 }
                 inviteAcceptCommand = new InviteAcceptCommand(connection, luckPerms, time);

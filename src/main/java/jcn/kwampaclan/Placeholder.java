@@ -30,7 +30,7 @@ public class Placeholder extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.0";
+        return "1.0";
     }
 
     @Override

@@ -11,13 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
-
 public class InventoryClose implements Listener {
-    private KwampaClan plugin;
-    public InventoryClose(KwampaClan plugin){
-        this.plugin = plugin;
-    }
     NamespacedKey namespacedKey = new NamespacedKey(Bukkit.getPluginManager().getPlugin("KwampaClan"), "KwampaClan");
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
